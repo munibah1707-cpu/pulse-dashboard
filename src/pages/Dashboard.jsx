@@ -1,12 +1,52 @@
 import { useTasks } from '../context/TaskContext'
+import { teamMembers } from '../data/mockData'
+import StatCard from '../components/StatCard'
+import { BsCheckSquare, BsCircle, BsExclamationCircle, BsPeople } from 'react-icons/bs'
 
 export default function Dashboard() {
   const { tasks } = useTasks()
 
+  const totalTasks = tasks.length
+  const completedTasks = tasks.filter(t => t.status === 'done').length
+  const overdueTasks = tasks.filter(t => t.status === 'overdue').length
+  const inProgressTasks = tasks.filter(t => t.status === 'inprogress').length
+  const completionRate = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0
+
   return (
-    <div>
-      <h2 className="text-2xl font-semibold mb-4" style={{ color: '#F1EDF7' }}>Dashboard</h2>
-      <p style={{ color: '#9D8FAE' }}>Tasks loaded: {tasks.length}</p>
+    <div className="flex flex-col gap-6">
+
+      {/* Stat Cards */}
+      <div className="grid grid-cols-2 gap-4" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+        <StatCard
+          title="Total Tasks"
+          value={totalTasks}
+          subtitle={`${inProgressTasks} in progress`}
+          icon={<BsCircle size={18} />}
+          accentColor="#F43F8A"
+        />
+        <StatCard
+          title="Completed"
+          value={completedTasks}
+          subtitle={`${completionRate}% completion rate`}
+          icon={<BsCheckSquare size={18} />}
+          accentColor="#34D399"
+        />
+        <StatCard
+          title="Overdue"
+          value={overdueTasks}
+          subtitle="Needs immediate attention"
+          icon={<BsExclamationCircle size={18} />}
+          accentColor="#EF4444"
+        />
+        <StatCard
+          title="Team Members"
+          value={teamMembers.length}
+          subtitle="Active on this project"
+          icon={<BsPeople size={18} />}
+          accentColor="#FBBF24"
+        />
+      </div>
+
     </div>
   )
 }
