@@ -16,9 +16,14 @@ export default function Layout({ children }) {
             borderBottom: `1px solid ${isDark ? '#2E2040' : '#E8DFF5'}`
           }}>
           <div>
-            <h1 className="text-lg font-semibold" style={{ color: isDark ? '#F1EDF7' : '#18121E' }}>
-              Good Morning 👋
-            </h1>
+             <h1 className="text-lg font-semibold" style={{ color: isDark ? '#F1EDF7' : '#18121E' }}>
+               {(() => {
+                const hour = new Date().getHours()
+                if (hour < 12) return 'Good Morning 👋'
+                if (hour < 17) return 'Good Afternoon 👋'
+                return 'Good Evening 👋'
+               })()}
+</h1>
             <p className="text-xs" style={{ color: isDark ? '#9D8FAE' : '#6B5B80' }}>
               Here's what's happening with your team today
             </p>
