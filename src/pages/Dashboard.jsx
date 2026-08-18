@@ -1,6 +1,7 @@
 import { useTasks } from '../context/TaskContext'
 import { teamMembers } from '../data/mockData'
 import StatCard from '../components/StatCard'
+import TaskTrendChart from '../components/TaskTrendChart'
 import { BsCheckSquare, BsCircle, BsExclamationCircle, BsPeople } from 'react-icons/bs'
 
 export default function Dashboard() {
@@ -16,7 +17,7 @@ export default function Dashboard() {
     <div className="flex flex-col gap-6">
 
       {/* Stat Cards */}
-      <div className="grid grid-cols-2 gap-4" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+      <div className="grid grid-cols-4 gap-4">
         <StatCard
           title="Total Tasks"
           value={totalTasks}
@@ -45,6 +46,11 @@ export default function Dashboard() {
           icon={<BsPeople size={18} />}
           accentColor="#FBBF24"
         />
+      </div>
+
+      {/* Charts Row */}
+      <div className="grid grid-cols-2 gap-4">
+        <TaskTrendChart />
       </div>
 
     </div>
