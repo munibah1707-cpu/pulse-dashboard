@@ -3,6 +3,7 @@ import { teamMembers } from '../data/mockData'
 import StatCard from '../components/StatCard'
 import TaskTrendChart from '../components/TaskTrendChart'
 import { BsCheckSquare, BsCircle, BsExclamationCircle, BsPeople } from 'react-icons/bs'
+import WorkloadChart from '../components/WorkloadChart'
 
 export default function Dashboard() {
   const { tasks } = useTasks()
@@ -48,9 +49,10 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* Charts Row */}
+         {/* Charts Row */}
       <div className="grid grid-cols-2 gap-4">
         <TaskTrendChart />
+        <WorkloadChart />
       </div>
 
     </div>
