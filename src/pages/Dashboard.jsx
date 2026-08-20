@@ -5,6 +5,7 @@ import TaskTrendChart from '../components/TaskTrendChart'
 import { BsCheckSquare, BsCircle, BsExclamationCircle, BsPeople } from 'react-icons/bs'
 import WorkloadChart from '../components/WorkloadChart'
 import StatusDonut from '../components/StatusDonut'
+import ActivityFeed from '../components/ActivityFeed'
 
 export default function Dashboard() {
   const { tasks } = useTasks()
@@ -56,9 +57,12 @@ export default function Dashboard() {
         <WorkloadChart />
       </div>
 
-      {/* Bottom Row */}
+       {/* Bottom Row */}
       <div className="grid grid-cols-3 gap-4">
         <StatusDonut />
+        <div className="col-span-2">
+          <ActivityFeed />
+        </div>
       </div>
 
     </div>
