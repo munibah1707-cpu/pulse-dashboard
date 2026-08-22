@@ -4,7 +4,7 @@ export default function StatCard({ title, value, subtitle, icon, accentColor }) 
   const { isDark } = useTheme()
 
   return (
-    <div className="rounded-xl p-5 flex flex-col gap-3 transition-all duration-200"
+        <div className="rounded-xl p-5 flex flex-col gap-3 transition-all duration-200 min-w-0"
       style={{
         background: isDark ? '#231A2E' : '#FFFFFF',
         border: `1px solid ${isDark ? '#2E2040' : '#E8DFF5'}`,
