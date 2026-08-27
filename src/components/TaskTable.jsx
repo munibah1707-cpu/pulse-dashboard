@@ -15,8 +15,9 @@ const statusConfig = {
   overdue: { label: 'Overdue', bg: '#EF444422', color: '#EF4444' },
 }
 
-export default function TaskTable() {
+export default function TaskTable({ filteredTasks }) {
   const { tasks } = useTasks()
+  const taskList = filteredTasks || tasks
   const { isDark } = useTheme()
 
   const getMemberName = (assigneeId) => {
@@ -52,7 +53,7 @@ export default function TaskTable() {
       </div>
 
       {/* Task rows */}
-      {tasks.map((task, index) => {
+        {taskList.map((task, index) => {
         const priority = priorityConfig[task.priority]
         const status = statusConfig[task.status]
 
@@ -63,7 +64,7 @@ export default function TaskTable() {
               gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr',
               padding: '14px 20px',
               alignItems: 'center',
-              borderBottom: index < tasks.length - 1
+              borderBottom: index < taskList.length - 1
                 ? `1px solid ${isDark ? '#2E2040' : '#E8DFF5'}`
                 : 'none',
               transition: 'background 0.15s',
