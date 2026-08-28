@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { useTheme } from '../context/ThemeContext'
 import TaskTable from '../components/TaskTable'
 import { useTasks } from '../context/TaskContext'
+import Modal from '../components/Modal'
+import AddTaskForm from '../components/AddTaskForm'
 
 const tabs = [
   { label: 'All', value: 'all' },
@@ -15,6 +17,7 @@ export default function Tasks() {
   const { isDark } = useTheme()
   const { tasks } = useTasks()
   const [activeTab, setActiveTab] = useState('all')
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   const totalTasks = tasks.length
   const completedTasks = tasks.filter(t => t.status === 'done').length
@@ -38,6 +41,22 @@ export default function Tasks() {
             {totalTasks} total — {completedTasks} completed, {inProgressTasks} in progress, {overdueTasks} overdue
           </p>
         </div>
+
+        <button
+          onClick={() => setIsModalOpen(true)}
+          style={{
+            padding: '8px 16px',
+            borderRadius: 8,
+            fontSize: 13,
+            fontWeight: 600,
+            cursor: 'pointer',
+            border: 'none',
+            background: '#F43F8A',
+            color: '#18121E',
+          }}
+        >
+          + Add Task
+        </button>
       </div>
 
       {/* Filter tabs */}
@@ -68,6 +87,11 @@ export default function Tasks() {
 
       {/* Task table */}
       <TaskTable filteredTasks={filteredTasks} />
+
+      {/* Add Task modal */}
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Task">
+        <AddTaskForm onSuccess={() => setIsModalOpen(false)} />
+      </Modal>
 
     </div>
   )
