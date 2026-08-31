@@ -1,6 +1,7 @@
 import { useTasks } from '../context/TaskContext'
 import { teamMembers } from '../data/mockData'
 import { useTheme } from '../context/ThemeContext'
+import { FiEdit2, FiTrash2 } from 'react-icons/fi'
 
 const priorityConfig = {
   high: { label: 'High', bg: '#EF444422', color: '#EF4444' },
@@ -15,8 +16,8 @@ const statusConfig = {
   overdue: { label: 'Overdue', bg: '#EF444422', color: '#EF4444' },
 }
 
-export default function TaskTable({ filteredTasks }) {
-  const { tasks } = useTasks()
+export default function TaskTable({ filteredTasks, onEdit }) {
+  const { tasks, deleteTask } = useTasks()
   const taskList = filteredTasks || tasks
   const { isDark } = useTheme()
 
@@ -30,6 +31,11 @@ export default function TaskTable({ filteredTasks }) {
     return member ? member.avatar : '??'
   }
 
+  const handleDelete = (task) => {
+    const confirmed = window.confirm(`Delete "${task.title}"? This can't be undone.`)
+    if (confirmed) deleteTask(task.id)
+  }
+
   return (
     <div className="rounded-xl overflow-hidden"
       style={{
@@ -40,12 +46,12 @@ export default function TaskTable({ filteredTasks }) {
       {/* Table header */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr',
+        gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 0.7fr',
         padding: '12px 20px',
         borderBottom: `1px solid ${isDark ? '#2E2040' : '#E8DFF5'}`,
         background: isDark ? '#1E1428' : '#F8F5FF',
       }}>
-        {['Task', 'Priority', 'Status', 'Assignee', 'Due Date'].map(col => (
+        {['Task', 'Priority', 'Status', 'Assignee', 'Due Date', 'Actions'].map(col => (
           <p key={col} style={{ fontSize: 12, fontWeight: 500, color: isDark ? '#9D8FAE' : '#6B5B80' }}>
             {col}
           </p>
@@ -53,7 +59,7 @@ export default function TaskTable({ filteredTasks }) {
       </div>
 
       {/* Task rows */}
-        {taskList.map((task, index) => {
+      {taskList.map((task, index) => {
         const priority = priorityConfig[task.priority]
         const status = statusConfig[task.status]
 
@@ -61,7 +67,7 @@ export default function TaskTable({ filteredTasks }) {
           <div key={task.id}
             style={{
               display: 'grid',
-              gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr',
+              gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 0.7fr',
               padding: '14px 20px',
               alignItems: 'center',
               borderBottom: index < taskList.length - 1
@@ -115,6 +121,34 @@ export default function TaskTable({ filteredTasks }) {
             <p style={{ fontSize: 12, color: isDark ? '#9D8FAE' : '#6B5B80' }}>
               {task.dueDate}
             </p>
+
+            {/* Actions */}
+            <div style={{ display: 'flex', gap: 10 }}>
+              <button
+                onClick={() => onEdit?.(task)}
+                aria-label={`Edit ${task.title}`}
+                style={{
+                  background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: isDark ? '#9D8FAE' : '#6B5B80', padding: 4, display: 'flex',
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#F43F8A'}
+                onMouseLeave={e => e.currentTarget.style.color = isDark ? '#9D8FAE' : '#6B5B80'}
+              >
+                <FiEdit2 size={14} />
+              </button>
+              <button
+                onClick={() => handleDelete(task)}
+                aria-label={`Delete ${task.title}`}
+                style={{
+                  background: 'transparent', border: 'none', cursor: 'pointer',
+                  color: isDark ? '#9D8FAE' : '#6B5B80', padding: 4, display: 'flex',
+                }}
+                onMouseEnter={e => e.currentTarget.style.color = '#EF4444'}
+                onMouseLeave={e => e.currentTarget.style.color = isDark ? '#9D8FAE' : '#6B5B80'}
+              >
+                <FiTrash2 size={14} />
+              </button>
+            </div>
           </div>
         )
       })}

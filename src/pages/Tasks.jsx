@@ -4,6 +4,7 @@ import TaskTable from '../components/TaskTable'
 import { useTasks } from '../context/TaskContext'
 import Modal from '../components/Modal'
 import AddTaskForm from '../components/AddTaskForm'
+import EditTaskForm from '../components/EditTaskForm'
 
 const tabs = [
   { label: 'All', value: 'all' },
@@ -17,7 +18,8 @@ export default function Tasks() {
   const { isDark } = useTheme()
   const { tasks } = useTasks()
   const [activeTab, setActiveTab] = useState('all')
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [editingTask, setEditingTask] = useState(null)
 
   const totalTasks = tasks.length
   const completedTasks = tasks.filter(t => t.status === 'done').length
@@ -27,6 +29,12 @@ export default function Tasks() {
   const filteredTasks = activeTab === 'all'
     ? tasks
     : tasks.filter(t => t.status === activeTab)
+
+  const isModalOpen = isAddModalOpen || !!editingTask
+  const closeModal = () => {
+    setIsAddModalOpen(false)
+    setEditingTask(null)
+  }
 
   return (
     <div className="flex flex-col gap-6">
@@ -43,7 +51,7 @@ export default function Tasks() {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={() => setIsAddModalOpen(true)}
           style={{
             padding: '8px 16px',
             borderRadius: 8,
@@ -86,11 +94,17 @@ export default function Tasks() {
       </div>
 
       {/* Task table */}
-      <TaskTable filteredTasks={filteredTasks} />
+      <TaskTable filteredTasks={filteredTasks} onEdit={setEditingTask} />
 
-      {/* Add Task modal */}
-      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title="Add New Task">
-        <AddTaskForm onSuccess={() => setIsModalOpen(false)} />
+      {/* Add / Edit modal */}
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={editingTask ? 'Edit Task' : 'Add New Task'}
+      >
+        {editingTask
+          ? <EditTaskForm task={editingTask} onSuccess={closeModal} />
+          : <AddTaskForm onSuccess={closeModal} />}
       </Modal>
 
     </div>
