@@ -1,9 +1,10 @@
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext } from 'react'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 const ThemeContext = createContext()
 
 export function ThemeProvider({ children }) {
-  const [isDark, setIsDark] = useState(true)
+  const [isDark, setIsDark] = useLocalStorage('pulse-theme', true)
 
   const toggleTheme = () => setIsDark(prev => !prev)
 

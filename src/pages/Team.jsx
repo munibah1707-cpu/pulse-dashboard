@@ -1,6 +1,7 @@
 import { useTheme } from '../context/ThemeContext'
 import { useTasks } from '../context/TaskContext'
 import { teamMembers } from '../data/mockData'
+import { useTaskStats } from '../hooks/useTaskStats'
 
 const statusConfig = {
   todo: { label: 'To Do', color: '#9D8FAE' },
@@ -15,14 +16,7 @@ export default function Team() {
 
   const getMemberStats = (memberId) => {
     const memberTasks = tasks.filter(t => t.assigneeId === memberId)
-    const total = memberTasks.length
-    const counts = {
-      todo: memberTasks.filter(t => t.status === 'todo').length,
-      inprogress: memberTasks.filter(t => t.status === 'inprogress').length,
-      done: memberTasks.filter(t => t.status === 'done').length,
-      overdue: memberTasks.filter(t => t.status === 'overdue').length,
-    }
-    return { total, counts }
+    return useTaskStats(memberTasks)
   }
 
   return (

@@ -5,7 +5,9 @@ import { useTasks } from '../context/TaskContext'
 import Modal from '../components/Modal'
 import AddTaskForm from '../components/AddTaskForm'
 import EditTaskForm from '../components/EditTaskForm'
+import { useTaskStats } from '../hooks/useTaskStats'
 import { FiSearch, FiX } from 'react-icons/fi'
+import { useDebounce } from '../hooks/useDebounce'
 
 const tabs = [
   { label: 'All', value: 'all' },
@@ -20,23 +22,22 @@ export default function Tasks() {
   const { tasks } = useTasks()
   const [activeTab, setActiveTab] = useState('all')
   const [searchQuery, setSearchQuery] = useState('')
+  const debouncedQuery = useDebounce(searchQuery, 300)
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
 
-  const totalTasks = tasks.length
-  const completedTasks = tasks.filter(t => t.status === 'done').length
-  const overdueTasks = tasks.filter(t => t.status === 'overdue').length
-  const inProgressTasks = tasks.filter(t => t.status === 'inprogress').length
+  const { total: totalTasks, counts } = useTaskStats(tasks)
+  
 
   const tabFilteredTasks = activeTab === 'all'
     ? tasks
     : tasks.filter(t => t.status === activeTab)
 
-  const filteredTasks = searchQuery.trim()
-    ? tabFilteredTasks.filter(t =>
-        t.title.toLowerCase().includes(searchQuery.trim().toLowerCase())
-      )
-    : tabFilteredTasks
+  const filteredTasks = debouncedQuery.trim()
+  ? tabFilteredTasks.filter(t =>
+      t.title.toLowerCase().includes(debouncedQuery.trim().toLowerCase())
+    )
+  : tabFilteredTasks
 
   const isModalOpen = isAddModalOpen || !!editingTask
   const closeModal = () => {
@@ -54,7 +55,7 @@ export default function Tasks() {
             Tasks
           </h2>
           <p style={{ fontSize: 13, color: isDark ? '#9D8FAE' : '#6B5B80', marginTop: 4 }}>
-            {totalTasks} total — {completedTasks} completed, {inProgressTasks} in progress, {overdueTasks} overdue
+            {totalTasks} total — {counts.done} completed, {counts.inprogress} in progress, {counts.overdue} overdue
           </p>
         </div>
 

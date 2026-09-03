@@ -5,6 +5,7 @@ import {
   PieChart, Pie, Cell, Tooltip, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Legend,
 } from 'recharts'
+import { useTaskStats } from '../hooks/useTaskStats'
 
 const priorityColors = { high: '#EF4444', medium: '#FBBF24', low: '#34D399' }
 const statusConfig = {
@@ -17,6 +18,7 @@ const statusConfig = {
 export default function Analytics() {
   const { isDark } = useTheme()
   const { tasks } = useTasks()
+  const { counts } = useTaskStats(tasks)
 
   const cardStyle = {
     background: isDark ? '#231A2E' : '#FFFFFF',
@@ -45,12 +47,11 @@ export default function Analytics() {
   })
 
   // Status breakdown counts
-  const statusCounts = Object.keys(statusConfig).map(key => ({
-    key,
-    ...statusConfig[key],
-    count: tasks.filter(t => t.status === key).length,
-  }))
-
+const statusCounts = Object.keys(statusConfig).map(key => ({
+  key,
+  ...statusConfig[key],
+  count: counts[key],
+}))
   const tooltipStyle = {
     background: isDark ? '#231A2E' : '#FFFFFF',
     border: `1px solid ${isDark ? '#2E2040' : '#E8DFF5'}`,
